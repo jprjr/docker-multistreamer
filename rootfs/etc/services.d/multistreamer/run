@@ -1,0 +1,7 @@
+#!/usr/bin/execlineb -P
+fdmove -c 2 1
+export LUA_PATH "/home/multistreamer/lua_modules/share/lua/5.1/?.lua;/home/multistreamer/lua_modules/share/lua/5.1/?/init.lua;/home/multistreamer/?.lua;"
+export LUA_CPATH "/home/multistreamer/lua_modules/lib/lua/5.1/?.so;"
+export LAPIS_ENVIRONMENT prod
+s6-setuidgid multistreamer
+luajit /home/multistreamer/bin/multistreamer.lua run

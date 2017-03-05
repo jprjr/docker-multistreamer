@@ -1,0 +1,53 @@
+local config = require('lapis.config').config
+
+config({'prod'}, {
+  session_name = '@@MULTISTREAMER_SESSION_NAME@@',
+  secret = '@@MULTISTREAMER_SESSION_SECRET@@',
+  logging = {
+      queries = @@MULTISTREAMER_LOG_QUERIES@@,
+      requests = @@MULTISTREAMER_LOG_REQUESTS@@,
+  },
+  http_prefix = '@@MULTISTREAMER_HTTP_PREFIX@@',
+  rtmp_prefix = '@@MULTISTREAMER_RTMP_PREFIX@@',
+  nginx = '/opt/nginx/sbin/nginx',
+  psql = '/usr/bin/psql',
+  ffmpeg = '/usr/bin/ffmpeg',
+  log_level = '@@MULTISTREAMER_LOG_LEVEL@@',
+  public_http_url = '@@MULTISTREAMER_PUBLIC_HTTP_URL@@',
+  public_rtmp_url = '@@MULTISTREAMER_PUBLIC_RTMP_URL@@',
+  private_http_url = 'http://127.0.0.1:8081',
+  private_rtmp_url = 'rtmp://127.0.0.1:1935',
+  public_irc_hostname = '@@MULTISTREAMER_PUBLIC_IRC_HOSTNAME@@',
+  public_irc_port = '@@MULTISTREAMER_PUBLIC_IRC_PORT@@',
+  public_irc_ssl = @@MULTISTREAMER_PUBLIC_IRC_SSL@@,
+  networks = {
+    @@MULTISTREAMER_TWITCH_CONFIG@@
+    @@MULTISTREAMER_YOUTUBE_CONFIG@@
+    @@MULTISTREAMER_FACEBOOK_CONFIG@@
+    rtmp = true,
+  },
+  postgres = {
+    host = '@@DB_HOST@@',
+    port = '@@DB_PORT@@',
+    user = '@@DB_USER@@',
+    password = '@@DB_PASS@@',
+    database = '@@DB_NAME@@',
+  },
+  http_listen = '8081',
+  rtmp_listen = '1935',
+  irc_listen  = '6667',
+  irc_hostname = '@@MULTISTREAMER_PUBLIC_IRC_HOSTNAME@@',
+  irc_force_join = @@MULTISTREAMER_IRC_FORCE_JOIN@@,
+  worker_processes = @@MULTISTREAMER_WORKER_PROCESSES@@,
+  redis_host = '@@REDIS_HOST@@:@@REDIS_PORT@@',
+  redis_prefix = '@@REDIS_PREFIX@@',
+  auth_endpoint = '@@MULTISTREAMER_AUTH_ENDPOINT@@',
+  ssl_trusted_certificate = '/etc/ssl/certs/ca-certificates.crt',
+  dns_resolver = '@@MULTISTREAMER_DNS_RESOLVER@@',
+  ssl_verify_depth = @@MULTISTREAMER_SSL_VERIFY_DEPTH@@,
+  lua_shared_dict_streams_size = '@@MULTISTREAMER_DICT_STREAMS_SIZE@@',
+  lua_shared_dict_writers_size = '@@MULTISTREAMER_DICT_WRITERS_SIZE@@',
+  work_dir = '/home/multistreamer/.multistreamer',
+})
+
+

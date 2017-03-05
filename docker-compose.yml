@@ -1,0 +1,32 @@
+redisio:
+  restart: always
+  image: redis:latest
+  volumes:
+   - /srv/docker/multistreamer/redis:/var/lib/redis:Z
+postgresql:
+  restart: always
+  image: postgres:latest
+  volumes:
+   - /srv/docker/multistreamer/postgresql:/var/lib/postgresql:Z
+  environment:
+   - DB_USER=multistreamer
+   - DB_PASS=password
+   - DB_NAME=multistreamer
+multistreamer:
+  restart: always
+  build: .
+  links:
+   - redisio
+   - postgresql
+  ports:
+   - "8081:8081"
+   - "6667:6667"
+   - "1935:1935"
+  volumes:
+   - /srv/docker/multistreamer/multistreamer:/etc/multistreamer:Z
+  environment:
+   - MULTISTREAMER_SESSION_SECRET=123456
+   - MULTISTREAMER_PUBLIC_HTTP_URL=http://127.0.0.1:8081
+   - MULTISTREAMER_PUBLIC_RTMP_URL=rtmp://127.0.0.1:1935
+   - MULTISTREAMER_PUBLIC_IRC_HOSTNAME=localhost
+   - MULTISTREAMER_PUBLIC_IRC_PORT=6667

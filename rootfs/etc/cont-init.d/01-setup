@@ -1,0 +1,219 @@
+#!/usr/bin/with-contenv sh
+
+mkdir -p /var/log/multistreamer
+mkdir -p /var/log/redis-auth-server
+mkdir -p /etc/multistreamer
+chown -R nobody:nogroup /var/log/multistreamer
+chown -R nobody:nogroup /var/log/redis-auth-server
+
+# check required variables
+if [ -z "${MULTISTREAMER_SESSION_SECRET}" ] ; then
+  printf "Missing required variable MULTISTREAMER_SESSION_SECRET\n"
+  exit 1
+fi
+
+if [ -z "${MULTISTREAMER_PUBLIC_HTTP_URL}" ] ; then
+  printf "Missing required variable MULTISTREAMER_PUBLIC_HTTP_URL\n"
+  exit 1
+fi
+
+if [ -z "${MULTISTREAMER_PUBLIC_RTMP_URL}" ] ; then
+  printf "Missing required variable MULTISTREAMER_PUBLIC_RTMP_URL\n"
+  exit 1
+fi
+
+if [ -z "${MULTISTREAMER_PUBLIC_IRC_HOSTNAME}" ] ; then
+  printf "Missing required variable MULTISTREAMER_PUBLIC_IRC_HOSTNAME\n"
+  exit 1
+fi
+
+if [ -z "${MULTISTREAMER_PUBLIC_IRC_PORT}" ] ; then
+  printf "Missing required variable MULTISTREAMER_PUBLIC_IRC_PORT\n"
+  exit 1
+fi
+
+# initialize variables
+MULTISTREAMER_SESSION_NAME=${MULTISTREAMER_SESSION_NAME:-multistreamer}
+MULTISTREAMER_LOG_QUERIES=${MULTISTREAMER_LOG_QUERIES:-false}
+MULTISTREAMER_LOG_REQUESTS=${MULTISTREAMER_LOG_REQUESTS:-false}
+MULTISTREAMER_HTTP_PREFIX=${MULTISTREAMER_HTTP_PREFIX:-}
+MULTISTREAMER_RTMP_PREFIX=${MULTISTREAMER_RTMP_PREFIX:-}
+MULTISTREAMER_LOG_LEVEL=${MULTISTREAMER_LOG_LEVEL:-error}
+MULTISTREAMER_PUBLIC_IRC_SSL=${MULTISTREAMER_PUBLIC_IRC_SSL:-false}
+
+MULTISTREAMER_TWITCH_CLIENT_ID=${MULTISTREAMER_TWITCH_CLIENT_ID:-}
+MULTISTREAMER_TWITCH_CLIENT_SECRET=${MULTISTREAMER_TWITCH_CLIENT_SECRET:-}
+MULTISTREAMER_TWITCH_INGEST_SERVER=${MULTISTREAMER_TWITCH_INGEST_SERVER:-}
+
+MULTISTREAMER_YOUTUBE_CLIENT_ID=${MULTISTREAMER_YOUTUBE_CLIENT_ID:-}
+MULTISTREAMER_YOUTUBE_CLIENT_SECRET=${MULTISTREAMER_YOUTUBE_CLIENT_SECRET:-}
+MULTISTREAMER_YOUTUBE_COUNTRY_CODE=${MULTISTREAMER_YOUTUBE_COUNTRY_CODE:-}
+
+MULTISTREAMER_FACEBOOK_APP_ID=${MULTISTREAMER_FACEBOOK_APP_ID:-}
+MULTISTREAMER_FACEBOOK_APP_SECRET=${MULTISTREAMER_FACEBOOK_APP_SECRET:-}
+
+MULTISTREAMER_FACEBOOK_APP_ID=${MULTISTREAMER_FACEBOOK_CLIENT_ID:-${MULTISTREAMER_FACEBOOK_APP_ID}}
+MULTISTREAMER_FACEBOOK_APP_SECRET=${MULTISTREAMER_FACEBOOK_CLIENT_SECRET:-${MULTISTREAMER_FACEBOOK_APP_ID}}
+
+MULTISTREAMER_TWITCH_CONFIG=""
+MULTISTREAMER_YOUTUBE_CONFIG=""
+MULTISTREAMER_FACEBOOK_CONFIG=""
+
+if [ -n "${MULTISTREAMER_TWITCH_CLIENT_ID}" ] && [ -n "${MULTISTREAMER_TWITCH_CLIENT_SECRET}" ] && [ -n "${MULTISTREAMER_TWITCH_INGEST_SERVER}" ] ; then
+  MULTISTREAMER_TWITCH_CONFIG="twitch = { client_id = '$MULTISTREAMER_TWITCH_CLIENT_ID', client_secret = '$MULTISTREAMER_TWITCH_CLIENT_SECRET', ingest_server = '$MULTISTREAMER_TWITCH_INGEST_SERVER' },"
+fi
+
+if [ -n "${MULTISTREAMER_YOUTUBE_CLIENT_ID}" ] && [ -n "${MULTISTREAMER_YOUTUBE_CLIENT_SECRET}" ] && [ -n "${MULTISTREAMER_YOUTUBE_INGEST_SERVER}" ] ; then
+  MULTISTREAMER_YOUTUBE_CONFIG="youtube = { client_id = '$MULTISTREAMER_YOUTUBE_CLIENT_ID', client_secret = '$MULTISTREAMER_YOUTUBE_CLIENT_SECRET', country = '$MULTISTREAMER_YOUTUBE_COUNTRY_CODE' },"
+fi
+
+if [ -n "${MULTISTREAMER_FACEBOOK_APP_ID}" ] && [ -n "${MULTISTREAMER_FACEBOOK_APP_SECRET}" ] && [ -n "${MULTISTREAMER_FACEBOOK_INGEST_SERVER}" ] ; then
+  MULTISTREAMER_FACEBOOK_CONFIG="facebook = { app_id = '$MULTISTREAMER_FACEBOOK_APP_ID', app_secret = '$MULTISTREAMER_FACEBOOK_APP_SECRET' },"
+fi
+
+# figure out database
+if [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
+  DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
+  DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
+  DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRES_USER}}
+  DB_USER=${DB_USER:-postgres}
+  DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRES_PASSWORD}}
+  DB_NAME=${DB_NAME:-${DB_USER}}
+  DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_USER}}
+fi
+
+if [ -z "${DB_HOST}" ] ; then
+  printf "Unable to determine postgresql host\n"
+  exit 1
+fi
+
+DB_PORT=${DB_PORT:-5432}
+
+if [ -n "${REDISIO_PORT_6379_TCP_ADDR}" ] ; then
+  REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
+  REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
+fi
+
+if [ -z "${REDIS_HOST}" ] ; then
+  printf "Unable to determine redis host\n"
+  exit 1
+fi
+
+REDIS_PORT=${REDIS_PORT:-6379}
+REDIS_PREFIX=${REDIS_PREFIX:-multistreamer/}
+
+if [ -z "${MULTISTREAMER_AUTH_ENDPOINT}" ] ; then
+  MULTISTREAMER_AUTH_ENDPOINT="http://127.0.0.1:8080/"
+  printf "config = { nginx = '/opt/nginx/sbin/nginx', redis_host = '$REDIS_HOST', redis_port = $REDIS_PORT, work_dir = '/home/redisauth/.redis-auth-server' }; return config;\n" > /home/redisauth/etc/config.lua
+  rm /etc/services.d/redis-auth-server/down
+fi
+
+MULTISTREAMER_IRC_FORCE_JOIN=${MULTISTREAMER_IRC_FORCE_JOIN:-false}
+MULTISTREAMER_WORKER_PROCESSES=${MULTISTREAMER_WORKER_PROCESSES:-1}
+
+MULTISTREAMER_DNS_RESOLVER=${MULTISTREAMER_DNS_RESOLVER:-8.8.8.8}
+MULTISTREAMER_SSL_VERIFY_DEPTH=${MULTISTREAMER_SSL_VERIFY_DEPTH:-5}
+
+MULTISTREAMER_DICT_STREAMS_SIZE=${MULTISTREAMER_DICT_STREAMS_SIZE:-10m}
+MULTISTREAMER_DICT_WRITERS_SIZE=${MULTISTREAMER_DICT_WRITERS_SIZE:-10m}
+
+cp /opt/multistreamer/config.lua.tmpl /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_SESSION_NAME@@#$MULTISTREAMER_SESSION_NAME#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_SESSION_SECRET@@#$MULTISTREAMER_SESSION_SECRET#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_LOG_QUERIES@@#$MULTISTREAMER_LOG_QUERIES#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_LOG_REQUESTS@@#$MULTISTREAMER_LOG_REQUESTS#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_HTTP_PREFIX@@#$MULTISTREAMER_HTTP_PREFIX#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_RTMP_PREFIX@@#$MULTISTREAMER_RTMP_PREFIX#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_LOG_LEVEL@@#$MULTISTREAMER_LOG_LEVEL#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_PUBLIC_HTTP_URL@@#$MULTISTREAMER_PUBLIC_HTTP_URL#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_PUBLIC_RTMP_URL@@#$MULTISTREAMER_PUBLIC_RTMP_URL#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_PUBLIC_IRC_HOSTNAME@@#$MULTISTREAMER_PUBLIC_IRC_HOSTNAME#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_PUBLIC_IRC_PORT@@#$MULTISTREAMER_PUBLIC_IRC_PORT#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_PUBLIC_IRC_SSL@@#$MULTISTREAMER_PUBLIC_IRC_SSL#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_TWITCH_CONFIG@@#$MULTISTREAMER_TWITCH_CONFIG#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_YOUTUBE_CONFIG@@#$MULTISTREAMER_YOUTUBE_CONFIG#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_FACEBOOK_CONFIG@@#$MULTISTREAMER_FACEBOOK_CONFIG#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@DB_HOST@@#$DB_HOST#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@DB_PORT@@#$DB_PORT#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@DB_USER@@#$DB_USER#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@DB_PASS@@#$DB_PASS#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@DB_NAME@@#$DB_NAME#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_IRC_FORCE_JOIN@@#$MULTISTREAMER_IRC_FORCE_JOIN#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_WORKER_PROCESSES@@#$MULTISTREAMER_WORKER_PROCESSES#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@REDIS_HOST@@#$REDIS_HOST#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@REDIS_PORT@@#$REDIS_PORT#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@REDIS_PREFIX@@#$REDIS_PREFIX#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_AUTH_ENDPOINT@@#$MULTISTREAMER_AUTH_ENDPOINT#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_DNS_RESOLVER@@#$MULTISTREAMER_DNS_RESOLVER#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_SSL_VERIFY_DEPTH@@#$MULTISTREAMER_SSL_VERIFY_DEPTH#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_DICT_STREAMS_SIZE@@#$MULTISTREAMER_DICT_STREAMS_SIZE#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_DICT_WRITERS_SIZE@@#$MULTISTREAMER_DICT_WRITERS_SIZE#g" \
+  /etc/multistreamer/config.lua
+
+LUA_PATH="/home/multistreamer/lua_modules/share/lua/5.1/?.lua;/home/multistreamer/lua_modules/share/lua/5.1/?/init.lua;/home/multistreamer/?.lua;" \
+LUA_CPATH="/home/multistreamer/lua_modules/lib/lua/5.1/?.so;" \
+LAPIS_ENVIRONMENT=prod \
+s6-setuidgid multistreamer \
+luajit /home/multistreamer/bin/multistreamer.lua initdb
+
+
+

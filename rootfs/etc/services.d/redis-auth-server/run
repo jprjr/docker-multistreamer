@@ -1,0 +1,6 @@
+#!/usr/bin/execlineb -P
+fdmove -c 2 1
+export LUA_PATH "/home/redisauth/lua_modules/share/lua/5.1/?.lua;/home/redisauth/lua_modules/share/lua/5.1/?/init.lua;/home/redisauth/?.lua;./?.lua;"
+export LUA_CPATH "/home/redisauth/lua_modules/lib/lua/5.1/?.so;"
+s6-setuidgid redisauth
+luajit /home/redisauth/bin/redis-auth-server.lua
