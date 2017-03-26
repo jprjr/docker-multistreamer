@@ -1,0 +1,5 @@
+#!/usr/bin/execlineb -P
+fdmove -c 2 1
+s6-setuidgid multistreamer
+/usr/bin/sockexec -t0 /tmp/exec.sock
+

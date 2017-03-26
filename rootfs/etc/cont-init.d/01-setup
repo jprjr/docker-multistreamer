@@ -1,9 +1,11 @@
 #!/usr/bin/with-contenv sh
 
 mkdir -p /var/log/multistreamer
+mkdir -p /var/log/sockexec
 mkdir -p /var/log/redis-auth-server
 mkdir -p /etc/multistreamer
 chown -R nobody:nogroup /var/log/multistreamer
+chown -R nobody:nogroup /var/log/sockexec
 chown -R nobody:nogroup /var/log/redis-auth-server
 
 # check required variables

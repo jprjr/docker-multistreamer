@@ -7,7 +7,8 @@ ARG NGINX_LUA_VER=0.10.7
 ARG NGINX_RTMP_VER=1.1.10
 ARG NGINX_STREAM_LUA_VER=e527417c5d04da0c26c12cf4d8a0ef0f1e36e051
 ARG LUAROCKS_VER=2.4.2
-ARG MULTISTREAMER_VER=5.3.2
+ARG MULTISTREAMER_VER=6.0.0
+ARG SOCKEXEC_VER=1.1.0
 
 RUN apk add --no-cache \
     gcc \
@@ -41,6 +42,8 @@ RUN apk add --no-cache \
   cd /tmp/openresty-build && \
   curl -R -L -o s6-overlay-amd64.tar.gz \
     https://github.com/just-containers/s6-overlay/releases/download/v$S6_OVERLAY_VER/s6-overlay-amd64.tar.gz  && \
+  curl -R -L -o sockexec-x86_64-linux-musl.tar.gz \
+    https://github.com/jprjr/sockexec/releases/download/$SOCKEXEC_VER/sockexec-x86_64-linux-musl.tar.gz && \
   curl -R -L -o nginx-$NGINX_VER.tar.gz \
     https://nginx.org/download/nginx-$NGINX_VER.tar.gz && \
   curl -R -L -o ngx_devel_kit-$NGINX_DEVEL_KIT_VER.tar.gz \
@@ -60,6 +63,7 @@ RUN apk add --no-cache \
   tar xzf stream-lua-nginx-module-$NGINX_STREAM_LUA_VER.tar.gz && \
   tar xzf luarocks-$LUAROCKS_VER.tar.gz && \
   tar xzf s6-overlay-amd64.tar.gz -C / && \
+  tar xzf sockexec-x86_64-linux-musl.tar.gz -C /usr && \
   cd nginx-$NGINX_VER && \
   ( \
     export LUAJIT_LIB=$(pkg-config --variable=libdir luajit) && \
@@ -98,6 +102,7 @@ RUN apk add --no-cache \
   mv multistreamer-$MULTISTREAMER_VER/* . && \
   rm -rf multistreamer-$MULTISTREAMER_VER && \
   ln -fs /etc/multistreamer/config.lua /home/multistreamer/config.lua && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-exec && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-jit-uuid && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-string && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-http && \

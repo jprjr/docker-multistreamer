@@ -1,0 +1,2 @@
+#!/bin/execlineb -P
+logutil-service /var/log/sockexec
