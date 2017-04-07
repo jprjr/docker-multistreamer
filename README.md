@@ -96,6 +96,9 @@ will be figured out. Otherwise, set these environment variables:
 
 ### Enabling streaming services
 
+The [multistreamer wiki](https://github.com/jprjr/multistreamer/wiki) has details
+on registering apps for Facebook, Twitch, and YouTube.
+
 #### Twitch
 
 Specify your client id, secret, and which ingest server to use:
