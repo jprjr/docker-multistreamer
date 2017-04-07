@@ -8,6 +8,7 @@ postgresql:
   image: postgres:latest
   volumes:
    - /srv/docker/multistreamer/postgresql:/var/lib/postgresql:Z
+   - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
   environment:
    - DB_USER=multistreamer
    - DB_PASS=password
