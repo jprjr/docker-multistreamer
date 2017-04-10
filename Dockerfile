@@ -11,6 +11,7 @@ ARG MULTISTREAMER_VER=6.1.1
 ARG SOCKEXEC_VER=1.1.0
 
 RUN apk add --no-cache \
+    bash \
     gcc \
     make \
     musl-dev \
