@@ -15,7 +15,7 @@ postgresql:
    - DB_NAME=multistreamer
 multistreamer:
   restart: always
-  image: jprjr/multistreamer:7.0.0-1
+  image: jprjr/multistreamer:7.2.0-1
   links:
    - redisio
    - postgresql
