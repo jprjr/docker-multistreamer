@@ -3,11 +3,11 @@ FROM alpine:3.5
 ARG S6_OVERLAY_VER=1.19.1.1
 ARG NGINX_VER=1.10.3
 ARG NGINX_DEVEL_KIT_VER=0.3.0
-ARG NGINX_LUA_VER=0.10.7
-ARG NGINX_RTMP_VER=1.1.10
+ARG NGINX_LUA_VER=0.10.8
+ARG NGINX_RTMP_VER=1.1.11
 ARG NGINX_STREAM_LUA_VER=e527417c5d04da0c26c12cf4d8a0ef0f1e36e051
 ARG LUAROCKS_VER=2.4.2
-ARG MULTISTREAMER_VER=7.4.0
+ARG MULTISTREAMER_VER=8.0.0
 ARG SOCKEXEC_VER=1.3.0-2
 
 RUN apk add --no-cache \
@@ -147,8 +147,8 @@ RUN apk add --no-cache \
   rm -rf /tmp/openresty-build && \
   mkdir -p /var/log/multistreamer && \
   chown nobody:nogroup /var/log/multistreamer
-  
-COPY rootfs / 
+
+COPY rootfs /
 
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS 2
 
