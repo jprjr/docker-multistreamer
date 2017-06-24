@@ -9,7 +9,7 @@ to multiple video-streaming services at the same time.
 
 This is an image for running multistreamer in a container.
 
-Now with a handy video! https://youtu.be/bzTbCNV8qrQ
+Now with a handy video! https://youtu.be/HdDDtBOLme4
 
 ## Quick Start
 
