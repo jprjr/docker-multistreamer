@@ -14,7 +14,7 @@ postgresql:
    - POSTGRES_PASS=password
 multistreamer:
   restart: always
-  image: jprjr/multistreamer:8.0.0-1
+  image: jprjr/multistreamer:8.0.0-2
   links:
    - redisio
    - postgresql
