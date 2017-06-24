@@ -122,6 +122,14 @@ Specify your app ip and secret:
 * `MULTISTREAMER_FACEBOOK_APP_ID`
 * `MULTISTREAMER_FACEBOOK_APP_SECRET`
 
+#### Beam
+
+Specify your client id, secret, and which ingest server to use:
+
+* `MULTISTREAMER_BEAM_CLIENT_ID`
+* `MULTISTREAMER_BEAM_CLIENT_SECRET`
+* `MULTISTREAMER_BEAM_INGEST_SERVER`
+
 ### Other environment variables
 
 * `MULTISTREAMER_RTMP_PREFIX` - defaults to 'multistreamer' if unset. This is independent
