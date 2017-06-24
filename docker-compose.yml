@@ -10,9 +10,8 @@ postgresql:
    - /srv/docker/multistreamer/postgresql:/var/lib/postgresql:Z
    - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
   environment:
-   - DB_USER=multistreamer
-   - DB_PASS=password
-   - DB_NAME=multistreamer
+   - POSTGRES_USER=multistreamer
+   - POSTGRES_PASS=password
 multistreamer:
   restart: always
   image: jprjr/multistreamer:8.0.0-1
