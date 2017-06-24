@@ -14,7 +14,7 @@ postgresql:
    - POSTGRES_PASS=password
 multistreamer:
   restart: always
-  image: jprjr/multistreamer:8.0.0-2
+  image: jprjr/multistreamer:8.0.1-1
   links:
    - redisio
    - postgresql
@@ -33,7 +33,7 @@ multistreamer:
    - MULTISTREAMER_PUBLIC_IRC_HOSTNAME=localhost
    - MULTISTREAMER_PUBLIC_IRC_PORT=6667
    - MULTISTREAMER_TWITCH_CLIENT_ID=
-   - MULTISTREAMER_TWITCH_CLIENT_SECET=
+   - MULTISTREAMER_TWITCH_CLIENT_SECRET=
    - MULTISTREAMER_TWITCH_INGEST_SERVER=
    - MULTISTREAMER_YOUTUBE_CLIENT_ID=
    - MULTISTREAMER_YOUTUBE_CLIENT_SECRET=
