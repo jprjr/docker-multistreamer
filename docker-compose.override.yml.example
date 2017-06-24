@@ -1,0 +1,48 @@
+redisio:
+  volumes:
+   - /srv/docker/multistreamer/redis:/var/lib/redis:Z
+postgresql:
+  volumes:
+   - /srv/docker/multistreamer/postgresql:/var/lib/postgresql:Z
+   - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+  environment:
+   - POSTGRES_USER=multistreamer
+   - POSTGRES_PASS=password
+multistreamer:
+  ports:
+   - "8081:8081"
+   - "6667:6667"
+   - "1935:1935"
+  volumes:
+   - /srv/docker/multistreamer/multistreamer:/etc/multistreamer:Z
+   - ./htpasswd:/etc/htpasswd-auth-server:Z
+  environment:
+   - MULTISTREAMER_AUTH_ENDPOINT=
+   - MULTISTREAMER_SESSION_SECRET=123456
+   - MULTISTREAMER_PUBLIC_HTTP_URL=http://127.0.0.1:8081
+   - MULTISTREAMER_PUBLIC_RTMP_URL=rtmp://127.0.0.1:1935
+   - MULTISTREAMER_RTMP_PREFIX=multistreamer
+   - MULTISTREAMER_HTTP_PREFIX=
+   - MULTISTREAMER_PUBLIC_IRC_HOSTNAME=localhost
+   - MULTISTREAMER_PUBLIC_IRC_PORT=6667
+   - MULTISTREAMER_TWITCH_CLIENT_ID=
+   - MULTISTREAMER_TWITCH_CLIENT_SECRET=
+   - MULTISTREAMER_TWITCH_INGEST_SERVER=
+   - MULTISTREAMER_YOUTUBE_CLIENT_ID=
+   - MULTISTREAMER_YOUTUBE_CLIENT_SECRET=
+   - MULTISTREAMER_YOUTUBE_COUNTRY_CODE=
+   - MULTISTREAMER_FACEBOOK_APP_ID=
+   - MULTISTREAMER_FACEBOOK_APP_SECRET=
+   - MULTISTREAMER_BEAM_CLIENT_ID=
+   - MULTISTREAMER_BEAM_CLIENT_SECRET=
+   - MULTISTREAMER_BEAM_INGEST_SERVER=
+   - MULTISTREAMER_LOG_LEVEL=error
+   - MULTISTREAMER_PUBLIC_IRC_SSL=false
+   - MULTISTREAMER_SESSION_NAME=multistreamer
+   - MULTISTREAMER_LOQ_QUERIES=false
+   - MULTISTREAMER_LOQ_REQUESTS=false
+   - MULTISTREAMER_IRC_FORCE_JOIN=false
+   - MULTISTREAMER_WORKER_PROCESSES=1
+   - MULTISTREAMER_DNS_RESOLVER=8.8.8.8 ipv6=off
+   - MULTISTREAMER_DICT_STREAMS_SIZE=10m
+   - MULTISTREAMER_DICT_WRITERS_SIZE=10m

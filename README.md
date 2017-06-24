@@ -13,8 +13,8 @@ Now with a handy video! https://youtu.be/bzTbCNV8qrQ
 
 ## Quick Start
 
-You can get this up and running with docker-compose. Copy the example
-docker-compose.yml file somewhere, edit as-needed,
+You can get this up and running with docker-compose. Copy `docker-compose.override.yml.example`
+to `docker-compose.override.yml` and edit as needed, then
 then run `docker-compose up`. You'll have multistreamer's web interface
 running on port 8081, RTMP ingest on 1935, and IRC on 6667.
 
