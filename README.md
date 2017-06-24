@@ -24,18 +24,23 @@ is most likely broken, you need to change a few settings to make that work.
 
 ## Not-so-quick start
 
+If you mount an htpasswd volume into the container at `/etc/htpasswd-auth-server/htpasswd`,
+the container will launch an internal `htpasswd-auth-server` instead of the built-in
+redis auth. Or if you're using docker-compose, drop an htpasswd file into the htpasswd
+directory at the root of this repo.
+
 If you want to provide actual authentication, set the `MULTISTREAMER_AUTH_ENDPOINT`
 environment variable.
 
 Multistreamer makes HTTP requests against said endpoint, using the status
 code to determine if the password was correct. Here's a few usable endpoints:
 
+* [redis-auth-server](https://github.com/jprjr/redis-auth-server) - auto-create
+and store users in redis (included)
 * [htpasswd-auth-server](https://github.com/jprjr/htpasswd-auth-server) - auth
-users against an htpasswd file.
+against an htpasswd file (included)
 * [ldap-auth-server](https://github.com/jprjr/ldap-auth-server) - auth against
 LDAP.
-* [redis-auth-server](https://github.com/jprjr/redis-auth-server) - included
-in this image, auto-create and store users in redis.
 
 ### Things to know:
 

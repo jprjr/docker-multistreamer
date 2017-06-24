@@ -115,6 +115,8 @@ RUN apk add --no-cache \
   /opt/luarocks/bin/luarocks --tree lua_modules install whereami && \
   chown -R multistreamer:nogroup . && \
   mkdir /etc/multistreamer && \
+  mkdir /etc/htpasswd-auth-server && \
+  mkdir /etc/redis-auth-server && \
   adduser -h /home/redisauth -g redisauth -s /sbin/nologin -S -D redisauth && \
   cd /home/redisauth && \
   curl -R -L -o redis-auth-server-master.tar.gz \
@@ -124,6 +126,19 @@ RUN apk add --no-cache \
   rm -rf redis-auth-server-master && \
   chown -R redisauth:nogroup . && \
   ln -s /home/multistreamer/lua_modules ./lua_modules && \
+  rm -rf ./etc && \
+  ln -sf /etc/redis-auth-server ./etc && \
+  adduser -h /home/htpasswdauth -g htpasswdauth -s /sbin/nologin -S -D htpasswdauth && \
+  cd /home/htpasswdauth && \
+  curl -R -L -o htpasswd-auth-server-master.tar.gz \
+    https://github.com/jprjr/htpasswd-auth-server/archive/master.tar.gz && \
+  tar xzf htpasswd-auth-server-master.tar.gz && \
+  mv htpasswd-auth-server-master/* . && \
+  rm -rf htpasswd-auth-server-master && \
+  chown -R htpasswdauth:nogroup . && \
+  ln -s /home/multistreamer/lua_modules ./lua_modules && \
+  rm -rf ./etc && \
+  ln -sf /etc/htpasswd-auth-server ./etc && \
   cd / && \
   apk del --no-cache \
     gcc \

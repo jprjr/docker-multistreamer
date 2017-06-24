@@ -1,0 +1,6 @@
+#!/usr/bin/execlineb -P
+fdmove -c 2 1
+export LUA_PATH "/home/htpasswdauth/lib/?.lua;/home/htpasswdauth/lua_modules/share/lua/5.1/?.lua;/home/htpasswdauth/lua_modules/share/lua/5.1/?/init.lua;/home/htpasswdauth/?.lua;./?.lua;"
+export LUA_CPATH "/home/htpasswdauth/lua_modules/lib/lua/5.1/?.so;"
+s6-setuidgid htpasswdauth
+luajit /home/htpasswdauth/bin/htpasswd-auth-server.lua run

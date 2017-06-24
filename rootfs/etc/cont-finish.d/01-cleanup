@@ -1,0 +1,6 @@
+#!/bin/sh
+
+rm -f /etc/htpasswd-auth-server/config.lua
+rm -f /etc/redis-auth-server/config.lua
+touch /etc/services.d/htpasswd-auth-server/down
+touch /etc/services.d/redis-auth-server/down

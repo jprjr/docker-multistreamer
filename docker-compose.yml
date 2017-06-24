@@ -14,7 +14,7 @@ postgresql:
    - POSTGRES_PASS=password
 multistreamer:
   restart: always
-  image: jprjr/multistreamer:8.0.1-1
+  image: jprjr/multistreamer:8.0.1-2
   links:
    - redisio
    - postgresql
@@ -24,7 +24,9 @@ multistreamer:
    - "1935:1935"
   volumes:
    - /srv/docker/multistreamer/multistreamer:/etc/multistreamer:Z
+   - ./htpasswd:/etc/htpasswd-auth-server:Z
   environment:
+   - MULTISTREAMER_AUTH_ENDPOINT=
    - MULTISTREAMER_SESSION_SECRET=123456
    - MULTISTREAMER_PUBLIC_HTTP_URL=http://127.0.0.1:8081
    - MULTISTREAMER_PUBLIC_RTMP_URL=rtmp://127.0.0.1:1935
