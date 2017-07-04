@@ -231,8 +231,7 @@ sed -i -e "s#@@MULTISTREAMER_DICT_STREAMS_SIZE@@#$MULTISTREAMER_DICT_STREAMS_SIZ
 sed -i -e "s#@@MULTISTREAMER_DICT_WRITERS_SIZE@@#$MULTISTREAMER_DICT_WRITERS_SIZE#g" \
   /etc/multistreamer/config.lua
 
-sed -i -e "s#@@MULTISTREAMER_IRC_MOTD@@#$MULTISTREAMER_IRC_MOTD#g" \
-  /etc/multistreamer/config.lua
+printf "%s\n]]\n})\n" "${MULTISTREAMER_IRC_MOTD}" >> /etc/multistreamer/config.lua
 
 LUA_PATH="/home/multistreamer/lua_modules/share/lua/5.1/?.lua;/home/multistreamer/lua_modules/share/lua/5.1/?/init.lua;/home/multistreamer/?.lua;" \
 LUA_CPATH="/home/multistreamer/lua_modules/lib/lua/5.1/?.so;" \
