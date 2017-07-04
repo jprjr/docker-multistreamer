@@ -137,6 +137,8 @@ MULTISTREAMER_SSL_VERIFY_DEPTH=${MULTISTREAMER_SSL_VERIFY_DEPTH:-5}
 MULTISTREAMER_DICT_STREAMS_SIZE=${MULTISTREAMER_DICT_STREAMS_SIZE:-10m}
 MULTISTREAMER_DICT_WRITERS_SIZE=${MULTISTREAMER_DICT_WRITERS_SIZE:-10m}
 
+MULTISTREAMER_IRC_MOTD=${MULTISTREAMER_IRC_MOTD:-Welcome to Multistreamer}
+
 cp /opt/multistreamer/config.lua.tmpl /etc/multistreamer/config.lua
 
 sed -i -e "s#@@MULTISTREAMER_SESSION_NAME@@#$MULTISTREAMER_SESSION_NAME#g" \
@@ -227,6 +229,9 @@ sed -i -e "s#@@MULTISTREAMER_DICT_STREAMS_SIZE@@#$MULTISTREAMER_DICT_STREAMS_SIZ
   /etc/multistreamer/config.lua
 
 sed -i -e "s#@@MULTISTREAMER_DICT_WRITERS_SIZE@@#$MULTISTREAMER_DICT_WRITERS_SIZE#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_IRC_MOTD@@#$MULTISTREAMER_IRC_MOTD#g" \
   /etc/multistreamer/config.lua
 
 LUA_PATH="/home/multistreamer/lua_modules/share/lua/5.1/?.lua;/home/multistreamer/lua_modules/share/lua/5.1/?/init.lua;/home/multistreamer/?.lua;" \
