@@ -148,7 +148,7 @@ terminator for multistreamer's IRC port.
 * `MULTISTREAMER_IRC_FORCE_JOIN` - defaults to 'false', set to 'true' to have IRC users
 force-joined into rooms when they go live.
 * `MULTISTREAMER_WORKER_PROCESSES` - defaults to 1, you can change the number of workers
-* `MULTISTREAMER_DNS_RESOLVER` - defaults to '8.8.8.8'
+* `MULTISTREAMER_DNS_RESOLVER` - defaults to '8.8.8.8 ipv6=off', see http://nginx.org/en/docs/http/ngx_http_core_module.html#resolver
 * `MULTISTREAMER_DICT_STREAMS_SIZE` - defaults to `10m`, this lets you change the shared dictionary
 size for keeping active stream information.
 * `MULTISTREAMER_DICT_WRITERS_SIZE` - defaults to `10m`, this lets you change the shared dictionary
