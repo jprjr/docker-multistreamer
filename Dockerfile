@@ -113,6 +113,7 @@ RUN apk add --no-cache \
   /opt/luarocks/bin/luarocks --tree lua_modules install luaposix && \
   /opt/luarocks/bin/luarocks --tree lua_modules install luafilesystem && \
   /opt/luarocks/bin/luarocks --tree lua_modules install whereami && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install luacrypto && \
   chown -R multistreamer:nogroup . && \
   mkdir /etc/multistreamer && \
   mkdir /etc/htpasswd-auth-server && \
