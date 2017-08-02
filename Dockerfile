@@ -7,8 +7,21 @@ ARG NGINX_LUA_VER=0.10.8
 ARG NGINX_RTMP_VER=1.2.0
 ARG NGINX_STREAM_LUA_VER=e527417c5d04da0c26c12cf4d8a0ef0f1e36e051
 ARG LUAROCKS_VER=2.4.2
-ARG MULTISTREAMER_VER=9.1.0
-ARG SOCKEXEC_VER=1.3.0-2
+ARG MULTISTREAMER_VER=10.1.1
+ARG SOCKEXEC_VER=2.0.1
+
+ARG LUA_LAPIS_VER=1.5.1-1
+ARG LUA_LUA_RESTY_EXEC_VER=3.0.1-0
+ARG LUA_LUA_RESTY_JIT_UUID_VER=0.0.6-1
+ARG LUA_LUA_RESTY_STRING_VER=0.09-0
+ARG LUA_LUA_RESTY_HTTP_VER=0.11-0
+ARG LUA_LUA_RESTY_UPLOAD_VER=0.09-2
+ARG LUA_LAPIS_VER=1.5.1-1
+ARG LUA_ETLUA_VER=1.3.0-1
+ARG LUA_LUAPOSIX_VER=34.0.1-3
+ARG LUA_LUAFILESYSTEM_VER=1.6.3-2
+ARG LUA_WHEREAMI_VER=1.2.1-0
+ARG LUA_LUACRYPTO_VER=0.3.2-2
 
 RUN apk add --no-cache \
     bash \
@@ -103,17 +116,17 @@ RUN apk add --no-cache \
   mv multistreamer-$MULTISTREAMER_VER/* . && \
   rm -rf multistreamer-$MULTISTREAMER_VER && \
   ln -fs /etc/multistreamer/config.lua /home/multistreamer/config.lua && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-exec && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-jit-uuid && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-string && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-http && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-upload && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lapis && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install etlua && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install luaposix && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install luafilesystem && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install whereami && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install luacrypto && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-exec $LUA_LUA_RESTY_EXEC_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-jit-uuid $LUA_LUA_RESTY_JIT_UUID_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-string $LUA_LUA_RESTY_STRING_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-http $LUA_LUA_RESTY_HTTP_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-upload $LUA_LUA_RESTY_UPLOAD_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lapis $LUA_LAPIS_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install etlua $LUA_ETLUA_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install luaposix $LUA_LUAPOSIX_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install luafilesystem $LUA_LUAFILESYSTEM_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install whereami $LUA_WHEREAMI_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install luacrypto $LUA_LUACRYPTO_VER && \
   chown -R multistreamer:nogroup . && \
   mkdir /etc/multistreamer && \
   mkdir /etc/htpasswd-auth-server && \
