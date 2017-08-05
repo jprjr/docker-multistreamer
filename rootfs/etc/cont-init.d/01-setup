@@ -87,7 +87,7 @@ if [ -n "${MULTISTREAMER_FACEBOOK_APP_ID}" ] && [ -n "${MULTISTREAMER_FACEBOOK_A
 fi
 
 if [ -n "${MULTISTREAMER_MIXER_CLIENT_ID}" ] && [ -n "${MULTISTREAMER_MIXER_CLIENT_SECRET}" ] && [ -n "${MULTISTREAMER_MIXER_INGEST_SERVER}" ] ; then
-  MULTISTREAMER_MIXER_CONFIG="beam = { client_id = '$MULTISTREAMER_MIXER_CLIENT_ID', client_secret = '$MULTISTREAMER_MIXER_CLIENT_SECRET', ingest_server = '$MULTISTREAMER_MIXER_INGEST_SERVER' },"
+  MULTISTREAMER_MIXER_CONFIG="mixer = { client_id = '$MULTISTREAMER_MIXER_CLIENT_ID', client_secret = '$MULTISTREAMER_MIXER_CLIENT_SECRET', ingest_server = '$MULTISTREAMER_MIXER_INGEST_SERVER' },"
 fi
 
 # figure out database
@@ -188,6 +188,9 @@ sed -i -e "s#@@MULTISTREAMER_YOUTUBE_CONFIG@@#$MULTISTREAMER_YOUTUBE_CONFIG#g" \
   /etc/multistreamer/config.lua
 
 sed -i -e "s#@@MULTISTREAMER_FACEBOOK_CONFIG@@#$MULTISTREAMER_FACEBOOK_CONFIG#g" \
+  /etc/multistreamer/config.lua
+
+sed -i -e "s#@@MULTISTREAMER_MIXER_CONFIG@@#$MULTISTREAMER_MIXER_CONFIG#g" \
   /etc/multistreamer/config.lua
 
 sed -i -e "s#@@DB_HOST@@#$DB_HOST#g" \
