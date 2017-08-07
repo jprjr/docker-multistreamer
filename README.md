@@ -72,7 +72,7 @@ your clients to use.
 
 ### Running Multistreamer under some prefix
 
-* `MULTISTREAMER_HTTP_PREFIX` - if you're running multstreamer at something like
+* `MULTISTREAMER_HTTP_PREFIX` - if you're running Multistreamer at something like
 `http://example.com/multistreamer`, set this environment variable to `/multistreamer` (or
 whatever your prefix is).
 
