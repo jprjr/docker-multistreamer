@@ -1,34 +1,30 @@
-FROM alpine:3.5
+FROM alpine:3.6
 
-ARG S6_OVERLAY_VER=1.19.1.1
-ARG NGINX_VER=1.10.3
-ARG NGINX_DEVEL_KIT_VER=0.3.0
-ARG NGINX_LUA_VER=0.10.8
-ARG NGINX_RTMP_VER=1.2.0
+ARG S6_OVERLAY_VER=1.21.2.1
+ARG OPENRESTY_VER=1.11.2.5
+ARG NGINX_RTMP_VER=1.2.1
 ARG NGINX_STREAM_LUA_VER=e527417c5d04da0c26c12cf4d8a0ef0f1e36e051
-ARG LUAROCKS_VER=2.4.2
-ARG MULTISTREAMER_VER=10.2.3
-ARG SOCKEXEC_VER=2.0.1
+ARG LUAROCKS_VER=2.4.3
+ARG MULTISTREAMER_VER=10.2.6
+ARG SOCKEXEC_VER=2.0.1-1
 
 ARG LUA_LAPIS_VER=1.5.1-1
-ARG LUA_LUA_RESTY_EXEC_VER=3.0.1-0
+ARG LUA_LUA_RESTY_EXEC_VER=3.0.3-0
 ARG LUA_LUA_RESTY_JIT_UUID_VER=0.0.6-1
-ARG LUA_LUA_RESTY_STRING_VER=0.09-0
 ARG LUA_LUA_RESTY_HTTP_VER=0.11-0
-ARG LUA_LUA_RESTY_UPLOAD_VER=0.09-2
-ARG LUA_LAPIS_VER=1.5.1-1
 ARG LUA_ETLUA_VER=1.3.0-1
 ARG LUA_LUAPOSIX_VER=34.0.1-3
-ARG LUA_LUAFILESYSTEM_VER=1.6.3-2
+ARG LUA_LUAFILESYSTEM_VER=1.7.0-2
 ARG LUA_WHEREAMI_VER=1.2.1-0
 ARG LUA_LUACRYPTO_VER=0.3.2-2
 
-RUN apk add --no-cache \
+RUN set -ex && \
+    apk add --no-cache \
     bash \
     gcc \
     make \
     musl-dev \
-    luajit-dev \
+    lua5.1-dev \
     linux-headers \
     gd-dev \
     geoip-dev \
@@ -44,11 +40,11 @@ RUN apk add --no-cache \
     git \
     unzip \
     ffmpeg \
-    luajit \
+    lua5.1 \
     pcre \
-    libressl2.4-libssl \
-    libressl2.4-libtls \
-    libressl2.4-libcrypto \
+    libressl2.5-libssl \
+    libressl2.5-libtls \
+    libressl2.5-libcrypto \
     ca-certificates \
     postgresql-client \
     zlib && \
@@ -58,33 +54,26 @@ RUN apk add --no-cache \
     https://github.com/just-containers/s6-overlay/releases/download/v$S6_OVERLAY_VER/s6-overlay-amd64.tar.gz  && \
   curl -R -L -o sockexec-x86_64-linux-musl.tar.gz \
     https://github.com/jprjr/sockexec/releases/download/$SOCKEXEC_VER/sockexec-x86_64-linux-musl.tar.gz && \
-  curl -R -L -o nginx-$NGINX_VER.tar.gz \
-    https://nginx.org/download/nginx-$NGINX_VER.tar.gz && \
-  curl -R -L -o ngx_devel_kit-$NGINX_DEVEL_KIT_VER.tar.gz \
-    https://github.com/simpl/ngx_devel_kit/archive/v$NGINX_DEVEL_KIT_VER.tar.gz && \
-  curl -R -L -o lua-nginx-module-$NGINX_LUA_VER.tar.gz \
-    https://github.com/openresty/lua-nginx-module/archive/v$NGINX_LUA_VER.tar.gz && \
+  curl -R -L -o openresty-$OPENRESTY_VER.tar.gz \
+    https://openresty.org/download/openresty-$OPENRESTY_VER.tar.gz && \
   curl -R -L -o nginx-rtmp-module-$NGINX_RTMP_VER.tar.gz \
     https://github.com/arut/nginx-rtmp-module/archive/v$NGINX_RTMP_VER.tar.gz && \
   curl -R -L -o stream-lua-nginx-module-$NGINX_STREAM_LUA_VER.tar.gz \
     https://github.com/openresty/stream-lua-nginx-module/archive/$NGINX_STREAM_LUA_VER.tar.gz && \
   curl -R -L -o luarocks-$LUAROCKS_VER.tar.gz \
     http://luarocks.github.io/luarocks/releases/luarocks-$LUAROCKS_VER.tar.gz && \
-  tar xzf nginx-$NGINX_VER.tar.gz && \
-  tar xzf ngx_devel_kit-$NGINX_DEVEL_KIT_VER.tar.gz && \
-  tar xzf lua-nginx-module-$NGINX_LUA_VER.tar.gz && \
-  tar xzf nginx-rtmp-module-$NGINX_RTMP_VER.tar.gz && \
+  curl -R -L -o lua-5.1.5.tar.gz \
+    https://www.lua.org/ftp/lua-5.1.5.tar.gz && \
+  tar xzf openresty-$OPENRESTY_VER.tar.gz && \
   tar xzf stream-lua-nginx-module-$NGINX_STREAM_LUA_VER.tar.gz && \
+  tar xzf nginx-rtmp-module-$NGINX_RTMP_VER.tar.gz && \
   tar xzf luarocks-$LUAROCKS_VER.tar.gz && \
   tar xzf s6-overlay-amd64.tar.gz -C / && \
   tar xzf sockexec-x86_64-linux-musl.tar.gz -C /usr && \
-  cd nginx-$NGINX_VER && \
+  cd openresty-$OPENRESTY_VER && \
   ( \
-    export LUAJIT_LIB=$(pkg-config --variable=libdir luajit) && \
-    export LUAJIT_INC=$(pkg-config --variable=includedir luajit) && \
-    export CC=$(which gcc) && \
     ./configure \
-      --prefix=/opt/nginx \
+      --prefix=/opt/openresty \
       --with-threads \
       --with-file-aio \
       --with-ipv6 \
@@ -93,18 +82,15 @@ RUN apk add --no-cache \
       --with-pcre-jit \
       --with-stream \
       --with-stream_ssl_module \
-      --add-module=../ngx_devel_kit-$NGINX_DEVEL_KIT_VER \
-      --add-module=../lua-nginx-module-$NGINX_LUA_VER \
-      --add-module=../nginx-rtmp-module-$NGINX_RTMP_VER \
-      --add-module=../stream-lua-nginx-module-$NGINX_STREAM_LUA_VER && \
+      --add-module=../stream-lua-nginx-module-$NGINX_STREAM_LUA_VER \
+      --add-module=../nginx-rtmp-module-$NGINX_RTMP_VER && \
     make  && \
     make install \
   ) && \
   cd /tmp/openresty-build/luarocks-$LUAROCKS_VER && \
   ./configure \
     --prefix=/opt/luarocks \
-    --with-lua-include=$(pkg-config --variable=includedir luajit) \
-    --lua-suffix=jit && \
+    --with-lua-include=$(pkg-config --variable=includedir lua5.1) && \
   make && \
   make build && \
   make install && \
@@ -118,9 +104,7 @@ RUN apk add --no-cache \
   ln -fs /etc/multistreamer/config.lua /home/multistreamer/config.lua && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-exec $LUA_LUA_RESTY_EXEC_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-jit-uuid $LUA_LUA_RESTY_JIT_UUID_VER && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-string $LUA_LUA_RESTY_STRING_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-http $LUA_LUA_RESTY_HTTP_VER && \
-  /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-upload $LUA_LUA_RESTY_UPLOAD_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lapis $LUA_LAPIS_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install etlua $LUA_ETLUA_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install luaposix $LUA_LUAPOSIX_VER && \
@@ -158,7 +142,7 @@ RUN apk add --no-cache \
     gcc \
     make \
     musl-dev \
-    luajit-dev \
+    lua5.1-dev \
     linux-headers \
     gd-dev \
     geoip-dev \
@@ -166,6 +150,7 @@ RUN apk add --no-cache \
     libxslt-dev \
     libressl-dev \
     paxmark \
+    readline-dev \
     pcre-dev \
     perl-dev \
     pkgconf \

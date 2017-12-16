@@ -124,10 +124,10 @@ REDIS_PREFIX=${REDIS_PREFIX:-multistreamer/}
 if [ -z "${MULTISTREAMER_AUTH_ENDPOINT}" ] ; then
   MULTISTREAMER_AUTH_ENDPOINT="http://127.0.0.1:8080/"
   if [ -f /etc/htpasswd-auth-server/htpasswd ] ; then
-    printf "config = { nginx = '/opt/nginx/sbin/nginx', work_dir = '/home/htpasswdauth/.htpasswd-auth-server' }; return config;\n" > /etc/htpasswd-auth-server/config.lua
+    printf "config = { nginx = '/opt/openresty/nginx/sbin/nginx', work_dir = '/home/htpasswdauth/.htpasswd-auth-server' }; return config;\n" > /etc/htpasswd-auth-server/config.lua
     rm -f /etc/services.d/htpasswd-auth-server/down
   else
-    printf "config = { nginx = '/opt/nginx/sbin/nginx', redis_host = '$REDIS_HOST', redis_port = $REDIS_PORT, work_dir = '/home/redisauth/.redis-auth-server' }; return config;\n" > /etc/redis-auth-server/config.lua
+    printf "config = { nginx = '/opt/openresty/nginx/sbin/nginx', redis_host = '$REDIS_HOST', redis_port = $REDIS_PORT, work_dir = '/home/redisauth/.redis-auth-server' }; return config;\n" > /etc/redis-auth-server/config.lua
     rm -f /etc/services.d/redis-auth-server/down
   fi
 fi
@@ -244,7 +244,5 @@ LUA_PATH="/home/multistreamer/lua_modules/share/lua/5.1/?.lua;/home/multistreame
 LUA_CPATH="/home/multistreamer/lua_modules/lib/lua/5.1/?.so;" \
 LAPIS_ENVIRONMENT=prod \
 s6-setuidgid multistreamer \
-luajit /home/multistreamer/bin/multistreamer.lua initdb >/dev/null 2>&1
-
-
+/opt/openresty/luajit/bin/luajit /home/multistreamer/bin/multistreamer.lua initdb >/dev/null 2>&1
 

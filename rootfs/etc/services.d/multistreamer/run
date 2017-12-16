@@ -4,4 +4,4 @@ export LUA_PATH "/home/multistreamer/lua_modules/share/lua/5.1/?.lua;/home/multi
 export LUA_CPATH "/home/multistreamer/lua_modules/lib/lua/5.1/?.so;"
 export LAPIS_ENVIRONMENT prod
 s6-setuidgid multistreamer
-luajit /home/multistreamer/bin/multistreamer.lua run
+/opt/openresty/luajit/bin/luajit /home/multistreamer/bin/multistreamer.lua run
