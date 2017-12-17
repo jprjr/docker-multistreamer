@@ -4,7 +4,6 @@ redisio:
 postgresql:
   volumes:
    - /srv/docker/multistreamer/postgresql:/var/lib/postgresql:Z
-   - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
   environment:
    - POSTGRES_USER=multistreamer
    - POSTGRES_PASS=password

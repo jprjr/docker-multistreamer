@@ -1,0 +1,143 @@
+### name of the cookie used to store session data
+session_name: '@@MULTISTREAMER_SESSION_NAME@@'
+
+### key for encrypting session data
+secret: '@@MULTISTREAMER_SESSION_SECRET@@'
+
+### whether to log queries and requests
+logging:
+  queries: @@MULTISTREAMER_LOG_QUERIES@@
+  requests: @@MULTISTREAMER_LOG_REQUESTS@@
+
+### if deploying somewhere other than the root of a domain
+### set this to your prefix (ie, '/multistreamer')
+http_prefix: '@@MULTISTREAMER_HTTP_PREFIX@@'
+
+### set an rtmp prefix
+### note: this can only be a single string
+### no slashes etc
+### defaults to 'multistreamer' if unset
+rtmp_prefix: '@@MULTISTREAMER_RTMP_PREFIX@@'
+
+### path to your nginx+lua+rtmp binary
+nginx: '/opt/openresty/nginx/sbin/nginx'
+
+### path to psql
+psql: '/usr/bin/psql'
+
+### path to ffmpeg
+ffmpeg: '/usr/bin/ffmpeg'
+
+### set your logging level
+log_level: '@@MULTISTREAMER_LOG_LEVEL@@'
+
+### setup your external urls (without prefixes)
+public_http_url: '@@MULTISTREAMER_PUBLIC_HTTP_URL@@'
+public_rtmp_url: '@@MULTISTREAMER_PUBLIC_RTMP_URL@@'
+
+### setup your private (loopback) urls (without prefixes)
+private_http_url: 'http://127.0.0.1:8081'
+private_rtmp_url: 'rtmp://127.0.0.1:1935'
+
+### setup your public IRC hostname, for the web
+### interface
+public_irc_hostname: '@@MULTISTREAMER_PUBLIC_IRC_HOSTNAME@@'
+
+### setup your public IRC port, to report in the
+### web interface
+public_irc_port: '@@MULTISTREAMER_PUBLIC_IRC_PORT@@'
+
+### set to true if you've setup an SSL terminator in front
+### of multistreamer
+public_irc_ssl: @@MULTISTREAMER_PUBLIC_IRC_SSL@@
+
+
+### configure streaming networks/services
+### you'll need to register a new app with each
+### service and insert keys/ids in here
+
+### 'rtmp' just stores RTMP urls and has no config
+networks:
+  @@MULTISTREAMER_TWITCH_CONFIG@@
+  @@MULTISTREAMER_YOUTUBE_CONFIG@@
+  @@MULTISTREAMER_FACEBOOK_CONFIG@@
+  @@MULTISTREAMER_MIXER_CONFIG@@
+
+  rtmp: true
+
+### postgres connection settings
+postgres:
+  host: '@@DB_HOST@@'
+  port: '@@DB_PORT@@'
+  user: '@@DB_USER@@'
+  password: '@@DB_PASS@@'
+  database: '@@DB_NAME@@'
+
+### nginx http "listen" directive, see
+### http://nginx.org/en/docs/http/ngx_http_core_module.html#listen
+http_listen: '8081'
+
+### nginx rtmp "listen" directive, see
+### https://github.com/arut/nginx-rtmp-module/wiki/Directives#listen
+### default: listen on all ipv6+ipv4 addresses
+rtmp_listen: '1935'
+
+### nginx irc "listen" directive, see
+### https://nginx.org/en/docs/stream/ngx_stream_core_module.html#listen
+### default: listen on all ipv6+ipv4 addresses
+irc_listen: '6667'
+
+### set the IRC hostname reported by the server
+irc_hostname: '@@MULTISTREAMER_PUBLIC_IRC_HOSTNAME@@'
+
+### should users be automatically brought into chat rooms when
+### their streams go live? (default false)
+### this is handy for clients like Adium, Pidgin, etc that don't
+### have a great IRC interface
+irc_force_join: @@MULTISTREAMER_IRC_FORCE_JOIN@@
+
+### number of worker processes
+worker_processes: @@MULTISTREAMER_WORKER_PROCESSES@@
+
+### http auth endpoint
+### multistreamer will make an HTTP request with the 'Authorization'
+### header to this URL when a user logs in
+### see http://nginx.org/en/docs/http/ngx_http_auth_request_module.html
+### see https://github.com/jprjr/ldap-auth-server for an LDAP implementation
+auth_endpoint: '@@MULTISTREAMER_AUTH_ENDPOINT@@'
+
+### redis host
+redis_host: '@@REDIS_HOST@@:@@REDIS_PORT@@'
+
+### prefix for redis keys
+redis_prefix: '@@REDIS_PREFIX@@'
+
+### path to trusted ssl certificate store
+ssl_trusted_certificate: '/etc/ssl/certs/ca-certificates.crt'
+
+### dns resolver
+dns_resolver: '@@MULTISTREAMER_DNS_RESOLVER@@'
+
+### maximum ssl verify depth
+ssl_verify_depth: @@MULTISTREAMER_SSL_VERIFY_DEPTH@@
+
+### sizes for shared dictionaries (see https://github.com/openresty/lua-nginx-module#lua_shared_dict)
+lua_shared_dict_streams_size: '@@MULTISTREAMER_DICT_STREAMS_SIZE@@'
+lua_shared_dict_writers_size: '@@MULTISTREAMER_DICT_WRITERS_SIZE@@'
+
+### specify the run directory to hold temp files etc
+### defaults to $HOME/.multistreamer if not set
+work_dir: '/home/multistreamer/.multistreamer'
+
+### set the path to sockexec's socket
+### see https://github.com/jprjr/sockexec for installation details
+sockexec_path: '/tmp/exec.sock'
+
+### allow/disallow transcoding (default: true)
+#allow_transcoding: true
+
+### allow/disallow creating pullers (default: true)
+#allow_custom_puller: true
+
+
+

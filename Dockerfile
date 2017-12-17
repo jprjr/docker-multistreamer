@@ -1,14 +1,13 @@
 FROM alpine:3.6
 
 ARG S6_OVERLAY_VER=1.21.2.1
-ARG OPENRESTY_VER=1.11.2.5
+ARG OPENRESTY_VER=1.13.6.1
 ARG NGINX_RTMP_VER=1.2.1
-ARG NGINX_STREAM_LUA_VER=e527417c5d04da0c26c12cf4d8a0ef0f1e36e051
 ARG LUAROCKS_VER=2.4.3
-ARG MULTISTREAMER_VER=10.2.6
+ARG MULTISTREAMER_VER=11.0.2
 ARG SOCKEXEC_VER=2.0.1-1
 
-ARG LUA_LAPIS_VER=1.5.1-1
+ARG LUA_LAPIS_VER=1.6.0-1
 ARG LUA_LUA_RESTY_EXEC_VER=3.0.3-0
 ARG LUA_LUA_RESTY_JIT_UUID_VER=0.0.6-1
 ARG LUA_LUA_RESTY_HTTP_VER=0.11-0
@@ -17,6 +16,9 @@ ARG LUA_LUAPOSIX_VER=34.0.1-3
 ARG LUA_LUAFILESYSTEM_VER=1.7.0-2
 ARG LUA_WHEREAMI_VER=1.2.1-0
 ARG LUA_LUACRYPTO_VER=0.3.2-2
+ARG LUA_LYAML_VER=6.2-1
+ARG LUA_REDIS_VER=2.0.4-1
+ARG LUA_MD5_VER=1.2-1
 
 RUN set -ex && \
     apk add --no-cache \
@@ -34,6 +36,8 @@ RUN set -ex && \
     paxmark \
     pcre-dev \
     perl-dev \
+    yaml-dev \
+    yaml \
     pkgconf \
     zlib-dev \
     curl \
@@ -58,14 +62,9 @@ RUN set -ex && \
     https://openresty.org/download/openresty-$OPENRESTY_VER.tar.gz && \
   curl -R -L -o nginx-rtmp-module-$NGINX_RTMP_VER.tar.gz \
     https://github.com/arut/nginx-rtmp-module/archive/v$NGINX_RTMP_VER.tar.gz && \
-  curl -R -L -o stream-lua-nginx-module-$NGINX_STREAM_LUA_VER.tar.gz \
-    https://github.com/openresty/stream-lua-nginx-module/archive/$NGINX_STREAM_LUA_VER.tar.gz && \
   curl -R -L -o luarocks-$LUAROCKS_VER.tar.gz \
     http://luarocks.github.io/luarocks/releases/luarocks-$LUAROCKS_VER.tar.gz && \
-  curl -R -L -o lua-5.1.5.tar.gz \
-    https://www.lua.org/ftp/lua-5.1.5.tar.gz && \
   tar xzf openresty-$OPENRESTY_VER.tar.gz && \
-  tar xzf stream-lua-nginx-module-$NGINX_STREAM_LUA_VER.tar.gz && \
   tar xzf nginx-rtmp-module-$NGINX_RTMP_VER.tar.gz && \
   tar xzf luarocks-$LUAROCKS_VER.tar.gz && \
   tar xzf s6-overlay-amd64.tar.gz -C / && \
@@ -82,7 +81,6 @@ RUN set -ex && \
       --with-pcre-jit \
       --with-stream \
       --with-stream_ssl_module \
-      --add-module=../stream-lua-nginx-module-$NGINX_STREAM_LUA_VER \
       --add-module=../nginx-rtmp-module-$NGINX_RTMP_VER && \
     make  && \
     make install \
@@ -101,7 +99,6 @@ RUN set -ex && \
   tar xzf multistreamer-$MULTISTREAMER_VER.tar.gz && \
   mv multistreamer-$MULTISTREAMER_VER/* . && \
   rm -rf multistreamer-$MULTISTREAMER_VER && \
-  ln -fs /etc/multistreamer/config.lua /home/multistreamer/config.lua && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-exec $LUA_LUA_RESTY_EXEC_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-jit-uuid $LUA_LUA_RESTY_JIT_UUID_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install lua-resty-http $LUA_LUA_RESTY_HTTP_VER && \
@@ -111,6 +108,9 @@ RUN set -ex && \
   /opt/luarocks/bin/luarocks --tree lua_modules install luafilesystem $LUA_LUAFILESYSTEM_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install whereami $LUA_WHEREAMI_VER && \
   /opt/luarocks/bin/luarocks --tree lua_modules install luacrypto $LUA_LUACRYPTO_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install lyaml $LUA_LYAML_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install redis-lua $LUA_REDIS_VER && \
+  /opt/luarocks/bin/luarocks --tree lua_modules install md5 $LUA_MD5_VER && \
   chown -R multistreamer:nogroup . && \
   mkdir /etc/multistreamer && \
   mkdir /etc/htpasswd-auth-server && \
@@ -153,6 +153,7 @@ RUN set -ex && \
     readline-dev \
     pcre-dev \
     perl-dev \
+    yaml-dev \
     pkgconf \
     zlib-dev \
     curl \

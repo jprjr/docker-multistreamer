@@ -1,2 +1,4 @@
 /htpasswd/htpasswd
+/htpasswd/config.yaml
+/htpasswd/config.lua
 docker-compose.*.yml
