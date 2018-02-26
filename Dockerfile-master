@@ -28,6 +28,7 @@ RUN apk add --no-cache \
     curl \
     git \
     unzip \
+    dnsmasq \
     ffmpeg \
     lua5.1-dev \
     lua5.1 \

@@ -4,6 +4,7 @@ mkdir -p /var/log/multistreamer
 mkdir -p /var/log/sockexec
 mkdir -p /var/log/redis-auth-server
 mkdir -p /var/log/htpasswd-auth-server
+mkdir -p /var/log/dnsmasq
 mkdir -p /etc/multistreamer
 mkdir -p /etc/redis-auth-server
 mkdir -p /etc/htpasswd-auth-server
@@ -11,6 +12,7 @@ chown -R nobody:nogroup /var/log/multistreamer
 chown -R nobody:nogroup /var/log/sockexec
 chown -R nobody:nogroup /var/log/redis-auth-server
 chown -R nobody:nogroup /var/log/htpasswd-auth-server
+chown -R nobody:nogroup /var/log/dnsmasq
 
 # check required variables
 if [ -z "${MULTISTREAMER_SESSION_SECRET}" ] ; then
