@@ -1,11 +1,11 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
-ARG S6_OVERLAY_VER=1.21.2.1
+ARG S6_OVERLAY_VER=1.21.2.2
 ARG OPENRESTY_VER=1.13.6.1
 ARG NGINX_RTMP_VER=1.2.1
 ARG LUAROCKS_VER=2.4.3
-ARG MULTISTREAMER_VER=11.0.2
-ARG SOCKEXEC_VER=2.0.1-1
+ARG MULTISTREAMER_VER=11.0.4
+ARG SOCKEXEC_VER=2.0.3
 
 ARG LUA_LAPIS_VER=1.6.0-1
 ARG LUA_LUA_RESTY_EXEC_VER=3.0.3-0
@@ -46,9 +46,9 @@ RUN set -ex && \
     ffmpeg \
     lua5.1 \
     pcre \
-    libressl2.5-libssl \
-    libressl2.5-libtls \
-    libressl2.5-libcrypto \
+    libressl2.6-libssl \
+    libressl2.6-libtls \
+    libressl2.6-libcrypto \
     ca-certificates \
     postgresql-client \
     zlib && \
