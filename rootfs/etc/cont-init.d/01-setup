@@ -238,4 +238,13 @@ sed -i -e "s#@@MULTISTREAMER_DICT_STREAMS_SIZE@@#$MULTISTREAMER_DICT_STREAMS_SIZ
 sed -i -e "s#@@MULTISTREAMER_DICT_WRITERS_SIZE@@#$MULTISTREAMER_DICT_WRITERS_SIZE#g" \
   /etc/multistreamer/config.yaml
 
+#awk -i inplace -v MULTISTREAMER_IRC_MOTD="$MULTISTREAMER_IRC_MOTD" \
+#  'NR == 1, /@@MULTISTREAMER_IRC_MOTD@@/ { sub(/@@MULTISTREAMER_IRC_MOTD@@/, MULTISTREAMER_IRC_MOTD) } 1' \
+#  /etc/multistreamer/config.yaml
 
+MULTISTREAMER_IRC_MOTD="$(cat <<EOS | awk -vRS="\n" -vORS="\\\n  " '1')"
+$MULTISTREAMER_IRC_MOTD
+EOS
+
+sed -i -e "s#@@MULTISTREAMER_IRC_MOTD@@#$MULTISTREAMER_IRC_MOTD#g" \
+  /etc/multistreamer/config.yaml

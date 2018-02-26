@@ -45,7 +45,7 @@ multistreamer:
    MULTISTREAMER_DNS_RESOLVER: 8.8.8.8 ipv6=off
    MULTISTREAMER_DICT_STREAMS_SIZE: 10m
    MULTISTREAMER_DICT_WRITERS_SIZE: 10m
-   MULTISTREAMER_IRC_MOTD: |=
+   MULTISTREAMER_IRC_MOTD: |-
      Welcome to the Multistreamer IRC server!
      I hope you have fun.
 
