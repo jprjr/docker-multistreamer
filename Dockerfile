@@ -43,6 +43,7 @@ RUN set -ex && \
     curl \
     git \
     unzip \
+    dnsmasq \
     ffmpeg \
     lua5.1 \
     pcre \
