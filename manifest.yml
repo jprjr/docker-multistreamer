@@ -1,0 +1,12 @@
+image: jprjr/multistreamer:11.0.6-2
+manifests:
+  -
+    image: jprjr/multistreamer:11.0.6-2-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  -
+    image: jprjr/multistreamer:11.0.6-2-armv6
+    platform:
+      architecture: arm
+      os: linux
