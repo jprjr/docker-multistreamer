@@ -45,6 +45,7 @@ multistreamer:
    MULTISTREAMER_DNS_RESOLVER: 127.0.0.1:5353 ipv6=off
    MULTISTREAMER_DICT_STREAMS_SIZE: 10m
    MULTISTREAMER_DICT_WRITERS_SIZE: 10m
+   MULTISTREAMER_FFMPEG_MAX_ATTEMPTS: 3
    MULTISTREAMER_IRC_MOTD: |-
      Welcome to the Multistreamer IRC server!
      I hope you have fun.
