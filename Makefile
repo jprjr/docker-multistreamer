@@ -1,5 +1,6 @@
 .PHONY: all
 
+VERSION = 11.3.4
 MANIFEST_TOOL_VER=0.7.0
 YQ_VER=1.14.0
 PLATFORM = $(shell uname -s | tr '[A-Z]' '[a-z]')
@@ -15,7 +16,7 @@ clean:
 
 setup: tools/manifest-tool tools/yq
 
-images: docker-images
+images: docker-images docker-compose.yml
 
 gpg-key: tools/.gpg-imported
 
@@ -47,6 +48,18 @@ tools/manifest-tool-$(MANIFEST_TOOL_VER): | tools/.gpg-imported
 tools:
 	mkdir -p tools
 
+manifest.yml: FORCE
+	sed "s/@@VERSION@@/$(VERSION)/" templates/$@ > $@
+
+Dockerfile: FORCE
+	sed "s/@@VERSION@@/$(VERSION)/" templates/$@ > $@
+
+Dockerfile-armv6: FORCE
+	sed "s/@@VERSION@@/$(VERSION)/" templates/$@ > $@
+
+docker-compose.yml: FORCE
+	sed "s/@@VERSION@@/$(VERSION)/" templates/$@ > $@
+
 docker-images: tools/yq tools/manifest-tool docker-image-amd64 docker-image-armv6
 	./tools/manifest-tool push from-spec manifest.yml
 
@@ -57,3 +70,5 @@ docker-image-amd64: Dockerfile manifest.yml
 docker-image-armv6: Dockerfile-armv6 manifest.yml
 	docker build --pull -t $(shell ./tools/yq read manifest.yml manifests[1].image) -f Dockerfile-armv6 .
 	docker push $(shell ./tools/yq read manifest.yml manifests[1].image)
+
+FORCE:
