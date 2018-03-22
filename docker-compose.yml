@@ -6,7 +6,7 @@ postgresql:
   image: postgres:latest
 multistreamer:
   restart: always
-  image: jprjr/multistreamer:11.4.0-1
+  image: jprjr/multistreamer:11.4.1-1
   links:
    - redisio
    - postgresql
