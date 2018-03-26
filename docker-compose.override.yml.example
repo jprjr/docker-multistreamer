@@ -16,6 +16,8 @@ multistreamer:
    - /srv/docker/multistreamer/multistreamer:/etc/multistreamer:Z
    - ./htpasswd:/etc/htpasswd-auth-server:Z
   environment:
+   MULTISTREAMER_APP_NAME: multistreamer
+   MULTISTREAMER_LANG_ID: en_us
    MULTISTREAMER_AUTH_ENDPOINT: 
    MULTISTREAMER_SESSION_SECRET: 123456
    MULTISTREAMER_PUBLIC_HTTP_URL: http://127.0.0.1:8081

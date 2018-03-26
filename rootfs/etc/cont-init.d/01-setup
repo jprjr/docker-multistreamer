@@ -150,6 +150,9 @@ MULTISTREAMER_DICT_WRITERS_SIZE=${MULTISTREAMER_DICT_WRITERS_SIZE:-10m}
 
 MULTISTREAMER_IRC_MOTD=${MULTISTREAMER_IRC_MOTD:-Welcome to Multistreamer}
 
+MULTISTREAMER_APP_NAME=${MULTISTREAMER_APP_NAME:-multistreamer}
+MULTISTREAMER_LANG_ID=${MULTISTREAMER_LANG_ID:-en_us}
+
 cp /opt/multistreamer/config.yaml.tmpl /etc/multistreamer/config.yaml
 
 sed -i -e "s#@@MULTISTREAMER_SESSION_NAME@@#$MULTISTREAMER_SESSION_NAME#g" \
@@ -252,6 +255,12 @@ sed -i -e "s#@@MULTISTREAMER_PING@@#$MULTISTREAMER_PING#g" \
   /etc/multistreamer/config.yaml
 
 sed -i -e "s#@@MULTISTREAMER_PING_TIMEOUT@@#$MULTISTREAMER_PING_TIMEOUT#g" \
+  /etc/multistreamer/config.yaml
+
+sed -i -e "s#@@MULTISTREAMER_APP_NAME@@#$MULTISTREAMER_APP_NAME#g" \
+  /etc/multistreamer/config.yaml
+
+sed -i -e "s#@@MULTISTREAMER_LANG_ID@@#$MULTISTREAMER_LANG_ID#g" \
   /etc/multistreamer/config.yaml
 
 MULTISTREAMER_IRC_MOTD="$(cat <<EOS | awk -vRS="\n" -vORS="\\\n  " '1')"
