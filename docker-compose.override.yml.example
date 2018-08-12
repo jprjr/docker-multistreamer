@@ -50,6 +50,7 @@ multistreamer:
    MULTISTREAMER_FFMPEG_MAX_ATTEMPTS: 3
    MULTISTREAMER_PING: 1m
    MULTISTREAMER_PING_TIMEOUT: 30s
+   MULTISTREAMER_SHOW_VERSION: 'true'
    MULTISTREAMER_IRC_MOTD: |-
      Welcome to the Multistreamer IRC server!
      I hope you have fun.
