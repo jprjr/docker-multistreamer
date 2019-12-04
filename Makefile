@@ -6,7 +6,7 @@ YQ_VER=1.14.0
 PLATFORM = $(shell uname -s | tr '[A-Z]' '[a-z]')
 
 all:
-	@printf 'Please run `%s (target)`\n' $(MAKE)
+	@printf 'Please run `make VERSION=whatever (target)`\n'
 	@printf "Available targets:\n"
 	@printf "  setup (grabs manifest-tool, yq)\n"
 	@printf "  images (builds and pushes docker images)\n"
