@@ -1,7 +1,7 @@
 .PHONY: all
 
 VERSION = 11.3.4
-MANIFEST_TOOL_VER=0.7.0
+MANIFEST_TOOL_VER=1.0.2
 YQ_VER=1.14.0
 PLATFORM = $(shell uname -s | tr '[A-Z]' '[a-z]')
 
