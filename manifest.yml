@@ -1,12 +1,12 @@
-image: jprjr/multistreamer:12.2.4-1
+image: jprjr/multistreamer:12.3.0-1
 manifests:
   -
-    image: jprjr/multistreamer:12.2.4-1-amd64
+    image: jprjr/multistreamer:12.3.0-1-amd64
     platform:
       architecture: amd64
       os: linux
   -
-    image: jprjr/multistreamer:12.2.4-1-armv6
+    image: jprjr/multistreamer:12.3.0-1-armv6
     platform:
       architecture: arm
       os: linux
